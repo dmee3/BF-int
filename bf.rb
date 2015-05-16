@@ -7,13 +7,13 @@ class Brainfuck
 
 	SIZE = 30000
 
-	# Initializer takes in program code as input
-	def initialize(input = "")
-		@arr = Array.new(SIZE,0)	# Byte array
-		@ap = 0						# Array pointer
-		code = input.gsub(/[^\>\<\+\-\.\,\[\]]/m, '')
-		@prog = code.split('')		# Program array
-		@pp = 0						# Program pointer
+	# Initializer takes in program and input
+	def initialize(code = "", input = "")
+		@ap = 0								# Array pointer
+		@pp = 0								# Program pointer
+		@arr = Array.new(SIZE,0)			# Byte array
+		@prog = code.gsub(/[^\>\<\+\-\.\,\[\]]/m, '').split('') # Program array
+		@inp = input.split(' ').map! { |s| s.ord }
 	end
 
 	# Move left 1 cell
@@ -36,14 +36,14 @@ class Brainfuck
 		@arr[@ap] -= 1
 	end
 
-	# Write from current cell
+	# Write from current cell to screen
 	def put
 		print @arr[@ap].chr
 	end
 
-	# Read into current cell
+	# Read into current cell from input array
 	def get
-		input = STDIN.getch.ord
+		input = @inp.shift if @inp.length > 0
 		@arr[@ap] = input if input >= 0 && input < 256
 	end
 
@@ -103,16 +103,31 @@ class Brainfuck
 	end
 end
 
-puts "\n-------- Brainfuck interpreter --------\n"
+print "\n---------------------------------------
+-------- Brainfuck interpreter --------
+---------------------------------------\n\n"
 
-# Check for input file
+# Check for code file
 if ARGV[0]
 
-	# Print argument (input file relative path) and file contents
-	print "input file:\t", ARGV[0], "\nfile contents:\n", File.read(ARGV[0]), "\n\n"
+	# Print argument (code file relative path) and file contents
+	print "------------------------\ncode file:\t", ARGV[0], "\n"
+	puts "contents:\n", File.read(ARGV[0]), "\n\n"
 
-	# Create new interpreter and run it
-	b = Brainfuck.new(File.read(ARGV[0]))
+	# Print optional input file
+	if ARGV[1]
+		print "------------------------\ninput file:\t", ARGV[1], "\n"
+		puts "contents:\n", File.read(ARGV[1]), "\n\n"
+
+		# Create interpreter with both code and input files
+		b = Brainfuck.new(File.read(ARGV[0]), File.read(ARGV[1]))
+	else
+
+		# Create interpreter with just code file
+		b = Brainfuck.new(File.read(ARGV[0]))
+	end
+
+	# Run interpreter
 	b.interpret
 	puts "\n\n"
 
