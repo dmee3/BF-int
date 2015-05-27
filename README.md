@@ -9,4 +9,3 @@ ruby bf.rb <code file> <input file>
 
 ## TODO:
 - Standardize I/O encoding scheme
-- Implement error checker

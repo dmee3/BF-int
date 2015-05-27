@@ -11,9 +11,9 @@ class Brainfuck
 	def initialize(code = "", input = "")
 		@ap = 0								# Array pointer
 		@pp = 0								# Program pointer
-		@arr = Array.new(SIZE,0)			# Byte array
+		@arr = Array.new(SIZE, 0)			# Byte array
 		@prog = code.gsub(/[^\>\<\+\-\.\,\[\]]/m, '').split('') # Program array
-		@inp = input.split(' ').map! { |s| s.ord }
+		@inp = input.split(' ').map! { |s| s.ord } # Input array (byte values)
 	end
 
 	# Move left 1 cell
@@ -75,7 +75,7 @@ class Brainfuck
 		end
 	end
 
-	# Interpreter runs through program code using pointer
+	# Run through program code using pointer
 	def interpret
 
 		while @pp < @prog.length
@@ -101,38 +101,43 @@ class Brainfuck
 			@pp += 1
 		end
 	end
-end
 
-print "\n---------------------------------------
--------- Brainfuck interpreter --------
----------------------------------------\n\n"
+	# Check program vailidity
+	def check
+
+		valid = true
+
+		# Check balanced loops
+		counts = Hash.new(0)
+		@prog.each do |p|
+			counts[p] += 1
+		end
+		if counts['['] != counts[']']
+			print 'Error: mismatched loop constructs [...]'
+			valid = false
+		end
+
+		return valid
+	end
+end
 
 # Check for code file
 if ARGV[0]
 
-	# Print argument (code file relative path) and file contents
-	print "------------------------\ncode file:\t", ARGV[0], "\n"
-	puts "contents:\n", File.read(ARGV[0]), "\n\n"
-
-	# Print optional input file
+	# Load code and optional input file(s)
 	if ARGV[1]
-		print "------------------------\ninput file:\t", ARGV[1], "\n"
-		puts "contents:\n", File.read(ARGV[1]), "\n\n"
-
-		# Create interpreter with both code and input files
 		b = Brainfuck.new(File.read(ARGV[0]), File.read(ARGV[1]))
 	else
-
-		# Create interpreter with just code file
 		b = Brainfuck.new(File.read(ARGV[0]))
 	end
 
 	# Run interpreter
-	b.interpret
+	puts "\n"
+	b.interpret if b.check
 	puts "\n\n"
 
 # Print error message
 else
-	puts "\n\tError: invalid arguments."
-	puts "\tUsage: ruby bf.rb <code file>\n\n"
+	puts "\nError: invalid arguments."
+	puts "Usage: ruby bf.rb <code file>\n\n"
 end
