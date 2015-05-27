@@ -3,6 +3,10 @@ A simple Brainfuck interpreter built in Ruby
 
 ## Usage
 ```
-ruby bf.rb <code file>
+ruby bf.rb <code file> <input file>
 ```
 **Note:** tested using Ruby 2.1.1
+
+## TODO:
+- Standardize I/O encoding scheme
+- Implement error checker
