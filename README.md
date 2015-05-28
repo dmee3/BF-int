@@ -10,4 +10,5 @@ ruby bf.rb <code file> <input file>
 ## TODO:
 - Standardize I/O encoding scheme
 - Keyboard vs. file input
+- Extend language (cell copy, print mem state, etc)
 - Command-line flags for above options
