@@ -11,4 +11,3 @@ ruby bf.rb <code file> <input file>
 - Standardize I/O encoding scheme
 - Keyboard vs. file input
 - Command-line flags for above options
-- Figure out why utm.b loops infinitely

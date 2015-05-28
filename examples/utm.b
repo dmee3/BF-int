@@ -1,4 +1,4 @@
-Should produce output '1c11111' on input 'b1b1bbb1c1c11111d'
+Should produce output '1c11111' on input 'b 1 b 1 b b b 1 c 1 c 1 1 1 1 1 d'
 
 utm is a brainfuck representation of a universal turing machine used
 to demonstrate the turing completeness of a brainfuck interpretation
