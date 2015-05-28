@@ -18,12 +18,22 @@ class Brainfuck
 
 	# Move left 1 cell
 	def left
-		@ap -= 1 if @ap > 0
+		if @ap > 0
+			@ap -= 1
+		else
+			puts "Error: tried to move out of array bounds\n\n"
+			exit
+		end
 	end
 
 	# Move right 1 cell
 	def right
-		@ap += 1 if @ap < SIZE - 1
+		if @ap < SIZE - 1
+			@ap += 1
+		else
+			puts "Error: tried to move out of array bounds\n\n"
+			exit
+		end
 	end
 
 	# Increment current cell
@@ -44,12 +54,11 @@ class Brainfuck
 	# Read into current cell from input array
 	def get
 		input = @inp.shift if @inp.length > 0
-		@arr[@ap] = input if input >= 0 && input < 256
+		@arr[@ap] = input if input != nil && input >= 0 && input < 256
 	end
 
 	# Jump forward to matching closing bracket
 	def forward
-
 		cur_depth = 1
 		while cur_depth > 0 && @pp < @prog.length - 1
 			@pp += 1
@@ -63,7 +72,6 @@ class Brainfuck
 
 	# Jump back to matching opening bracket
 	def back
-
 		cur_depth = 1
 		while cur_depth > 0 && @pp > 0
 			@pp -= 1
@@ -77,7 +85,7 @@ class Brainfuck
 
 	# Run through program code using pointer
 	def interpret
-
+		@pp = 0
 		while @pp < @prog.length
 			case @prog[@pp]
 			when '<'
@@ -104,16 +112,29 @@ class Brainfuck
 
 	# Check program vailidity
 	def check
-
 		valid = true
 
 		# Check balanced loops
-		counts = Hash.new(0)
-		@prog.each do |p|
-			counts[p] += 1
+		depth = 0
+		matched = true
+		while @pp < @prog.length
+			if @prog[@pp] == '['
+				depth += 1
+			elsif @prog[@pp] == ']'
+				depth -= 1
+			end
+
+			if depth < 0
+				puts "Error: mismatched loop construct [...]"
+				valid = false
+				matched = false
+				break
+			end
+
+			@pp += 1
 		end
-		if counts['['] != counts[']']
-			print 'Error: mismatched loop constructs [...]'
+		if depth != 0 && matched
+			puts "Error: mismatched loop construct [...]"
 			valid = false
 		end
 
@@ -123,7 +144,6 @@ end
 
 # Check for code file
 if ARGV[0]
-
 	# Load code and optional input file(s)
 	if ARGV[1]
 		b = Brainfuck.new(File.read(ARGV[0]), File.read(ARGV[1]))
