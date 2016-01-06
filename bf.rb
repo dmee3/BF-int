@@ -1,4 +1,4 @@
-# Brainfuck interpreter class
+# Brainfuck Interpreter
 #
 # Contains a method for each command in the brainfuck language,
 # as well as an initializer to set up the program code and interpreter
@@ -18,22 +18,22 @@ class Brainfuck
 
 	# Move left 1 cell
 	def left
-		if @ap > 0
-			@ap -= 1
-		else
+		# Don't move out of bounds
+		if @ap <= 0
 			puts "Error: tried to move out of array bounds\n\n"
 			exit
 		end
+		@ap -= 1
 	end
 
 	# Move right 1 cell
 	def right
+		# Don't move out of bounds
 		if @ap < SIZE - 1
-			@ap += 1
-		else
 			puts "Error: tried to move out of array bounds\n\n"
 			exit
 		end
+		@ap += 1
 	end
 
 	# Increment current cell
@@ -53,8 +53,20 @@ class Brainfuck
 
 	# Read into current cell from input array
 	def get
-		input = @inp.shift if @inp.length > 0
-		@arr[@ap] = input if input != nil && input >= 0 && input < 256
+		# Ensure input array is not empty
+		if @inp.length <= 0
+			puts "Error: tried to read char at EOF\n\n"
+			exit
+		end
+
+		# Read current input character and check that it isn't nil
+		input = @inp.shift
+		if input == nil
+			puts "Error: tried to read nil character\n\n"
+			exit
+		end
+
+		@arr[@ap] = input
 	end
 
 	# Jump forward to matching closing bracket
@@ -109,6 +121,18 @@ class Brainfuck
 			@pp += 1
 		end
 	end
+
+#
+#
+# Add * command to copy from one cell to another
+# Interpreter will have a variable initialized to -1 (empty).
+# When first * is encountered, value in current array cell
+# is copied to variable.  When next * is encountered,
+# value is copied to current array cell and * is reset to empty.
+#
+# Should all be done using command-line flag option to extend language
+#
+#
 
 	# Check program vailidity
 	def check
